@@ -7,6 +7,8 @@ import academy.lamppit.springboot.repository.AnimeRepository;
 import academy.lamppit.springboot.requests.AnimePostRequest;
 import academy.lamppit.springboot.requests.AnimePutRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 public class AnimeService {
     private final AnimeRepository animeRepository;
+    private final AnimeMapper animeMapper;
 
 
-    public List<Anime> listAll() {
-        return animeRepository.findAll();
+    public Page<Anime> listAll(Pageable pageable) {
+        return animeRepository.findAll(pageable);
     }
 
     public Anime findById(long id) {
@@ -30,13 +33,13 @@ public class AnimeService {
     }
 
     public Anime create(AnimePostRequest animePostRequest) {
-        Anime anime = AnimeMapper.INSTANCE.toAnime(animePostRequest);
+        Anime anime = animeMapper.toAnime(animePostRequest);
         return animeRepository.save(anime);
 
     }
     public void update(AnimePutRequest animePutRequest){
         Anime animeSaved = findById(animePutRequest.getId());
-        Anime anime = AnimeMapper.INSTANCE.toAnime(animePutRequest);
+        Anime anime = animeMapper.toAnime(animePutRequest);
         anime.setId(animeSaved.getId());
         animeRepository.save(anime);
 
