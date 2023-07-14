@@ -26,6 +26,13 @@ public class SpringClient {
         ResponseEntity<Anime> animeSaved2 = new RestTemplate().exchange("http://localhost:8080/anime", HttpMethod.POST,new HttpEntity<>(anime1), Anime.class);
         log.info(animeSaved2);
 
+        Anime animeSavedUpdate = animeSaved2.getBody();
+        animeSavedUpdate.setName("Attack on Titan");
+        ResponseEntity<Void> animeUpdate = new RestTemplate().exchange("http://localhost:8080/anime",HttpMethod.PUT, new HttpEntity<>(animeSavedUpdate), Void.class);
+        log.info(animeUpdate);
+        ResponseEntity<Void> animeDel = new RestTemplate().exchange("http://localhost:8080/anime/{id}", HttpMethod.DELETE, null, Void.class, animeSavedUpdate.getId());
+        log.info(animeDel);
+
 
 
     }
