@@ -1,7 +1,9 @@
 package academy.lamppit.springboot.requests;
 
-import jakarta.validation.constraints.NotEmpty;
+
 import lombok.Data;
+
+import javax.validation.constraints.NotEmpty;
 
 @Data
 public class AnimePostRequest {
