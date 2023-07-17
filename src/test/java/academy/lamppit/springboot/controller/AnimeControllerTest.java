@@ -29,6 +29,12 @@ class AnimeControllerTest {
         PageImpl<Anime> animePage = new PageImpl<>(List.of(AnimeCreator.createAnimeValidAnime()));
         BDDMockito.when(animeServiceMock.listAll(ArgumentMatchers.any()))
                 .thenReturn(animePage);
+        BDDMockito.when(animeServiceMock.listAllNoPageable())
+                .thenReturn(List.of(AnimeCreator.createAnimeValidAnime()));
+        BDDMockito.when(animeServiceMock.findById(ArgumentMatchers.anyLong()))
+                .thenReturn(AnimeCreator.createAnimeValidAnime());
+        BDDMockito.when(animeServiceMock.findByName(ArgumentMatchers.anyString()))
+                .thenReturn(List.of(AnimeCreator.createAnimeValidAnime()));
     }
     @Test
     @DisplayName("List returns list of Anime inside page object when successful")
@@ -40,5 +46,35 @@ class AnimeControllerTest {
                 .isNotEmpty()
                 .hasSize(1);
         Assertions.assertThat(animePage.toList().get(0).getName()).isEqualTo(expectedName);
+    }
+    @Test
+    @DisplayName("List returns list of Anime when successful")
+    void list_ReturnsListOfAnime_WhenSuccessful(){
+        String expectedName = AnimeCreator.createAnimeValidAnime().getName();
+        List<Anime> animeList = animeController.list().getBody();
+        Assertions.assertThat(animeList)
+                .isNotEmpty()
+                .isNotNull()
+                .hasSize(1);
+        Assertions.assertThat(animeList.get(0).getName()).isEqualTo(expectedName);
+    }
+    @Test
+    @DisplayName("Find by Id return Anime when successful")
+    void findById_ReturnAnimeById_WhenSuccessful(){
+        Long expectedId = AnimeCreator.createAnimeValidAnime().getId();
+        Anime anime = animeController.findById(1).getBody();
+        Assertions.assertThat(anime).isNotNull();
+        Assertions.assertThat(anime.getId()).isEqualTo(expectedId);
+    }
+    @Test
+    @DisplayName("Find by Name return Anime when successful")
+    void findByName_ReturnAnimeByName_WhenSuccessful(){
+        String expectedName = AnimeCreator.createAnimeValidAnime().getName();
+        List<Anime> animeList = animeController.findByName("teste").getBody();
+        Assertions.assertThat(animeList)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1);
+        Assertions.assertThat(animeList.get(0).getName()).isEqualTo(expectedName);
     }
 }
