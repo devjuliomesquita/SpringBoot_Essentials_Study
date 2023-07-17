@@ -1,22 +1,24 @@
 package academy.lamppit.springboot.controller;
 
 import academy.lamppit.springboot.domain.Anime;
+import academy.lamppit.springboot.requests.AnimePostRequest;
 import academy.lamppit.springboot.service.AnimeService;
 import academy.lamppit.springboot.util.AnimeCreator;
-
+import academy.lamppit.springboot.util.AnimePostRequestBodyCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @DisplayName("Tests for Anime Controller")
 class AnimeControllerTest {
@@ -35,6 +37,8 @@ class AnimeControllerTest {
                 .thenReturn(AnimeCreator.createAnimeValidAnime());
         BDDMockito.when(animeServiceMock.findByName(ArgumentMatchers.anyString()))
                 .thenReturn(List.of(AnimeCreator.createAnimeValidAnime()));
+        BDDMockito.when(animeServiceMock.create(ArgumentMatchers.any(AnimePostRequest.class)))
+                .thenReturn(AnimeCreator.createAnimeValidAnime());
     }
     @Test
     @DisplayName("List returns list of Anime inside page object when successful")
@@ -76,5 +80,13 @@ class AnimeControllerTest {
                 .isNotEmpty()
                 .hasSize(1);
         Assertions.assertThat(animeList.get(0).getName()).isEqualTo(expectedName);
+    }
+    @Test
+    @DisplayName("Create Anime when successful")
+    void create_ReturnAnime_WhenSuccessful(){
+        Anime animeCreate = animeController.create(AnimePostRequestBodyCreator.createAnimePostRequestBody()).getBody();
+        Assertions.assertThat(animeCreate)
+                .isNotNull()
+                .isEqualTo(AnimeCreator.createAnimeValidAnime());
     }
 }
