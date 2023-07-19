@@ -1,7 +1,9 @@
 package academy.lamppit.springboot.client;
 
 import academy.lamppit.springboot.domain.Anime;
+import academy.lamppit.springboot.repository.AnimeRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -12,7 +14,9 @@ import java.util.List;
 
 @Log4j2
 public class SpringClient {
+
     public static void main(String... args) {
+
 
         ResponseEntity<Anime> entity = new RestTemplate().getForEntity("http://localhost:8080/anime/{id}", Anime.class, 1);
         log.info(entity);

@@ -5,19 +5,16 @@ import academy.lamppit.springboot.repository.AnimeRepository;
 import academy.lamppit.springboot.requests.AnimePostRequest;
 import academy.lamppit.springboot.util.AnimeCreator;
 import academy.lamppit.springboot.util.AnimePostRequestBodyCreator;
-import academy.lamppit.springboot.util.AnimePutRequestBodyCreator;
 import academy.lamppit.springboot.wrapper.PageableResponse;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -30,12 +27,19 @@ import java.util.List;
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AnimeControllerIT {
-    @Autowired
-    private TestRestTemplate testRestTemplate;
-    @Autowired
-    private AnimeRepository animeRepository;
+
+    private final TestRestTemplate testRestTemplate;
+
+    private final AnimeRepository animeRepository;
+
     @LocalServerPort
     private int port;
+
+    public AnimeControllerIT(TestRestTemplate testRestTemplate, AnimeRepository animeRepository) {
+        this.testRestTemplate = testRestTemplate;
+        this.animeRepository = animeRepository;
+    }
+
     @Test
     @DisplayName("List returns list of Anime inside page object when successful")
     void list_ReturnsListOfAnimeInsidePageObject_WhenSuccessful(){
@@ -92,9 +96,9 @@ class AnimeControllerIT {
 //    @Test
 //    @DisplayName("save returns anime when successful")
 //    void save_ReturnsAnime_WhenSuccessful() {
-//        AnimePostRequest animePostRequestBody = AnimePostRequestBodyCreator.createAnimePostRequestBody();
+//        Anime animePostRequestBody = AnimeCreator.createAnimeToBeSaved();
 //
-//        ResponseEntity<Anime> animeResponseEntity = testRestTemplate.postForEntity("/animes", animePostRequestBody, Anime.class);
+//        ResponseEntity<Anime> animeResponseEntity = testRestTemplate.exchange("/anime", HttpMethod.POST, new HttpEntity<>(animePostRequestBody), Anime.class);
 //        log.info(animeResponseEntity.getStatusCode());
 //        Assertions.assertThat(animeResponseEntity).isNotNull();
 //        Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
